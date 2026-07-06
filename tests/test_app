@@ -1,0 +1,190 @@
+import unittest
+import os
+import json
+import jwt
+from app import create_app
+from config import Config
+from database import db, User, Prediction, Admin, Log
+from utils import calculate_emi, compare_loans
+
+class TestConfig(Config):
+    TESTING = True
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
+    WTF_CSRF_ENABLED = False
+
+class SmartLenderTestCase(unittest.TestCase):
+    def setUp(self):
+        # Configure app to use testing database
+        self.app = create_app(TestConfig)
+        
+        self.client = self.app.test_client()
+        
+        # Initialize database
+        with self.app.app_context():
+            db.create_all()
+            
+            # Seed a test admin
+            self.admin = Admin(username='test_admin', email='test_admin@domain.com')
+            self.admin.set_password('Admin@Password')
+            db.session.add(self.admin)
+            
+            # Seed a test user
+            self.user = User(username='test_user', email='test_user@domain.com', full_name='Test User')
+            self.user.set_password('User@Password')
+            db.session.add(self.user)
+            db.session.commit()
+
+    def tearDown(self):
+        with self.app.app_context():
+            db.session.remove()
+            db.drop_all()
+            db.engine.dispose()
+
+    # --- 1. Database Model Tests ---
+    def test_user_creation(self):
+        with self.app.app_context():
+            user = User.query.filter_by(username='test_user').first()
+            self.assertIsNotNone(user)
+            self.assertTrue(user.check_password('User@Password'))
+            self.assertFalse(user.check_password('Wrong@Password'))
+
+    # --- 2. Web UI Authentication Routing ---
+    def test_login_route_success(self):
+        response = self.client.post('/login', data={
+            'username': 'test_user',
+            'password': 'User@Password'
+        }, follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b'Dashboard Overview', response.data)
+
+    def test_login_route_failure(self):
+        response = self.client.post('/login', data={
+            'username': 'test_user',
+            'password': 'Wrong@Password'
+        }, follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b'Invalid username or password', response.data)
+
+    # --- 3. REST API & JWT Operations ---
+    def test_api_register_success(self):
+        response = self.client.post('/api/auth/register', json={
+            'username': 'new_api_user',
+            'email': 'new_api_user@domain.com',
+            'password': 'Password123',
+            'full_name': 'New API User'
+        })
+        self.assertEqual(response.status_code, 201)
+        data = json.loads(response.data)
+        self.assertEqual(data['message'], 'User registered successfully!')
+        self.assertEqual(data['user']['username'], 'new_api_user')
+
+    def test_api_register_failure_missing_fields(self):
+        response = self.client.post('/api/auth/register', json={
+            'username': 'missing_fields_user'
+        })
+        self.assertEqual(response.status_code, 400)
+        data = json.loads(response.data)
+        self.assertIn('message', data)
+
+    def test_api_register_failure_username_exists(self):
+        response = self.client.post('/api/auth/register', json={
+            'username': 'test_user',
+            'email': 'different_email@domain.com',
+            'password': 'Password123'
+        })
+        self.assertEqual(response.status_code, 400)
+        data = json.loads(response.data)
+        self.assertEqual(data['message'], 'Username already exists')
+
+    def test_api_login_success(self):
+        response = self.client.post('/api/auth/login', json={
+            'username': 'test_user',
+            'password': 'User@Password'
+        })
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.data)
+        self.assertIn('token', data)
+        self.assertEqual(data['user']['username'], 'test_user')
+
+    def test_api_login_failure(self):
+        response = self.client.post('/api/auth/login', json={
+            'username': 'test_user',
+            'password': 'Wrong@Password'
+        })
+        self.assertEqual(response.status_code, 401)
+        data = json.loads(response.data)
+        self.assertIn('message', data)
+        self.assertEqual(data['message'], 'Invalid credentials')
+
+    def test_api_token_auth_required(self):
+        # Accessing history without token
+        response = self.client.get('/api/predictions')
+        self.assertEqual(response.status_code, 401)
+        data = json.loads(response.data)
+        self.assertEqual(data['message'], 'Authentication token is missing!')
+
+    # --- 4. Prediction Routing and Integration ---
+    def test_web_predict_route(self):
+        # Login first via Web UI
+        self.client.post('/login', data={
+            'username': 'test_user',
+            'password': 'User@Password'
+        })
+        
+        # Submit prediction request
+        response = self.client.post('/predict', data={
+            'Gender': 'Male',
+            'Married': 'Yes',
+            'Dependents': '0',
+            'Education': 'Graduate',
+            'Self_Employed': 'No',
+            'ApplicantIncome': '5000',
+            'CoapplicantIncome': '0',
+            'LoanAmount': '150',
+            'Loan_Amount_Term': '360',
+            'Credit_History': '1.0',
+            'Property_Area': 'Semiurban'
+        }, follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b'Prediction calculated and results analyzed', response.data)
+
+    def test_api_predict_success(self):
+        # Get JWT token via API
+        login_response = self.client.post('/api/auth/login', json={
+            'username': 'test_user',
+            'password': 'User@Password'
+        })
+        token = json.loads(login_response.data)['token']
+        
+        # Call API predict endpoint with Authorization header
+        response = self.client.post('/api/predict', json={
+            'Gender': 'Male',
+            'Married': 'Yes',
+            'Dependents': '0',
+            'Education': 'Graduate',
+            'Self_Employed': 'No',
+            'ApplicantIncome': 5000,
+            'CoapplicantIncome': 0,
+            'LoanAmount': 150,
+            'Loan_Amount_Term': 360,
+            'Credit_History': 1.0,
+            'Property_Area': 'Semiurban'
+        }, headers={'Authorization': f'Bearer {token}'})
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.data)
+        self.assertEqual(data['message'], 'Prediction calculated successfully!')
+        self.assertIn('is_eligible', data)
+        self.assertIn('explanation', data)
+
+    # --- 5. EMI Utility Calculations ---
+    def test_emi_calculator(self):
+        # Principal: 100000, Rate: 9.5, Term: 240 months
+        res = calculate_emi(100000, 9.5, 240)
+        self.assertEqual(res['principal'], 100000.0)
+        self.assertEqual(res['rate'], 9.5)
+        self.assertEqual(res['term'], 240)
+        self.assertTrue(res['emi'] > 0)
+        self.assertEqual(res['total_payment'], round(res['emi'] * 240, 2))
+
+if __name__ == '__main__':
+    unittest.main()

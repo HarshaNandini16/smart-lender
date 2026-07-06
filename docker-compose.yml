@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - SECRET_KEY=docker_smart_lender_secret_key_9832
+      - DEBUG=False
+      - PORT=5000
+    volumes:
+      - ./instance:/app/instance
+      - ./static/uploads:/app/static/uploads
+      - ./static/reports:/app/static/reports
+      - ./models:/app/models
+    restart: always

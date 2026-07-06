@@ -1,0 +1,85 @@
+{% extends 'layout.html' %}
+
+{% block title %}User Management - Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Admin Navigation Sidebar -->
+        <div class="col-md-3 col-lg-2 sidebar d-none d-md-block py-4">
+            <ul class="nav nav-pills flex-column mb-auto">
+                <li class="nav-item">
+                    <a href="{{ url_for('routes.admin_dashboard') }}" class="nav-link text-white">
+                        <i class="fas fa-chart-line me-2"></i> Admin Stats
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('routes.admin_users') }}" class="nav-link active">
+                        <i class="fas fa-users-cog me-2"></i> User Manager
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('routes.admin_predictions') }}" class="nav-link text-white">
+                        <i class="fas fa-database me-2"></i> Predictions DB
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('routes.admin_logs') }}" class="nav-link text-white">
+                        <i class="fas fa-fingerprint me-2"></i> Audit Logs
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Main Panel -->
+        <div class="col-md-9 col-lg-10 py-4 px-md-4">
+            <div class="mb-4" data-aos="fade-down">
+                <h2 class="fw-bold text-white">User Account Manager</h2>
+                <p class="text-secondary small">View and manage registered user profiles</p>
+            </div>
+
+            <!-- Users Table -->
+            <div class="glass-card p-4" data-aos="fade-up">
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover align-middle small m-0">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Avatar</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Full Name</th>
+                                <th>Registered Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for u in users %}
+                                <tr>
+                                    <td>#{{ u.id }}</td>
+                                    <td>
+                                        <img src="{{ url_for('static', filename='uploads/' + u.profile_pic) }}" alt="Avatar" class="rounded-circle" style="width: 32px; height: 32px; object-fit: cover;">
+                                    </td>
+                                    <td><b>{{ u.username }}</b></td>
+                                    <td>{{ u.email }}</td>
+                                    <td>{{ u.full_name or 'N/A' }}</td>
+                                    <td>{{ u.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                    <td>
+                                        <form action="{{ url_for('routes.admin_delete_user', id=u.id) }}" method="POST" onsubmit="return confirm('WARNING: Deleting this user account will delete all associated loan predictions and logs. Continue?');">
+                                            <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill"><i class="fas fa-trash-can me-1"></i>Delete Account</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="7" class="text-center py-4 text-secondary">No registered user profiles found.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

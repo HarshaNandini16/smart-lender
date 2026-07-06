@@ -1,0 +1,41 @@
+{% extends 'layout.html' %}
+
+{% block title %}Admin Sign In - Smart Lender{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container d-flex justify-content-center align-items-center" style="min-height: 70vh;">
+        <div class="glass-card p-5 border-0 shadow-lg" style="max-width: 450px; width: 100%; border-top: 3px solid var(--accent-rose) !important;" data-aos="zoom-in">
+            <div class="text-center mb-4">
+                <i class="fas fa-user-tie fa-3x text-danger mb-3 animate-pulse"></i>
+                <h3 class="fw-bold text-white">Administrative Portal</h3>
+                <p class="text-secondary small">Access system logs, user tables, and ML scoring metrics</p>
+            </div>
+            
+            <form action="{{ url_for('routes.admin_login') }}" method="POST">
+                <div class="mb-3">
+                    <label class="form-label text-secondary small">Admin Username</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-dark border-secondary text-secondary"><i class="fas fa-user-shield"></i></span>
+                        <input type="text" name="username" class="form-control bg-dark border-secondary text-white" placeholder="Admin username" required>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="form-label text-secondary small">Admin Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-dark border-secondary text-secondary"><i class="fas fa-lock"></i></span>
+                        <input type="password" name="password" class="form-control bg-dark border-secondary text-white" placeholder="••••••••" required>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-danger w-100 py-2.5 rounded-pill mb-3">Sign In as Admin</button>
+            </form>
+            
+            <div class="text-center">
+                <a href="{{ url_for('routes.login') }}" class="text-primary text-decoration-none small"><i class="fas fa-chevron-left me-1"></i>Back to User Login</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

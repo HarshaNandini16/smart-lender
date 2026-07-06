@@ -1,0 +1,170 @@
+{% extends 'layout.html' %}
+
+{% block title %}Smart Lender - AI Powered Loan Eligibility System{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-sec d-flex align-items-center">
+    <div class="container text-center text-md-start">
+        <div class="row align-items-center">
+            <div class="col-md-6" data-aos="fade-right">
+                <span class="badge bg-primary px-3 py-2 rounded-pill mb-3">AI & Machine Learning Powered</span>
+                <h1 class="display-4 fw-bold text-white mb-3">Loan Approval <br><span class="text-gradient">Evaluated Instantly</span></h1>
+                <p class="lead text-secondary mb-4">Empower applicant evaluation using a highly optimized ML scoring pipeline. Automate decisions, visualize local data drivers, and download audit reports.</p>
+                <div class="d-flex gap-3 justify-content-center justify-content-md-start">
+                    {% if g.user %}
+                        <a href="{{ url_for('routes.predict') }}" class="btn btn-primary-grad btn-lg">Evaluate Loan Now</a>
+                        <a href="{{ url_for('routes.dashboard') }}" class="btn btn-outline-light btn-lg rounded-pill px-4">Dashboard</a>
+                    {% else %}
+                        <a href="{{ url_for('routes.register') }}" class="btn btn-primary-grad btn-lg">Get Started</a>
+                        <a href="{{ url_for('routes.login') }}" class="btn btn-outline-light btn-lg rounded-pill px-4">Sign In</a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-6 mt-5 mt-md-0 text-center" data-aos="fade-left">
+                <div class="position-relative d-inline-block">
+                    <!-- Elegant floating icon art -->
+                    <div class="glass-card p-5 bg-gradient-indigo-sky text-white rounded-5 shadow-lg border-0 d-inline-block" style="width: 280px; height: 280px; transform: rotate(-5deg);">
+                        <i class="fas fa-brain fa-5x mb-3 animate-bounce"></i>
+                        <h4 class="fw-bold">Predictive AI</h4>
+                        <p class="small m-0">Dynamic risk evaluation scoring using tree paths analysis.</p>
+                    </div>
+                    <div class="glass-card p-4 text-white rounded-4 shadow-lg border-0 position-absolute" style="width: 200px; bottom: -30px; left: -60px; background: rgba(16, 185, 129, 0.95); transform: rotate(5deg);">
+                        <i class="fas fa-check-circle fa-2x mb-2"></i>
+                        <h6 class="fw-bold m-0">Eligibility Approved</h6>
+                        <span class="small opacity-75">Probability: 92.4%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Core Features Section -->
+<section class="py-5" style="background: var(--bg-secondary);">
+    <div class="container">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <h2 class="fw-bold text-white mb-2">Enterprise Grade Features</h2>
+            <p class="text-secondary">Explore the technology stack driving the Smart Lender prediction engine.</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="glass-card p-4 h-100">
+                    <div class="text-primary mb-3"><i class="fas fa-gears fa-2x"></i></div>
+                    <h5 class="fw-bold text-white">Multi-Model Training</h5>
+                    <p class="text-secondary small">Compare 10 different ML classification algorithms, evaluating metrics (Accuracy, F1, AUC) to automatically load the best performer.</p>
+                </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="glass-card p-4 h-100">
+                    <div class="text-success mb-3"><i class="fas fa-magnifying-glass-chart fa-2x"></i></div>
+                    <h5 class="fw-bold text-white">Explainable AI (XAI)</h5>
+                    <p class="text-secondary small">Local feature contributions are calculated for every application, identifying the top positive and negative parameters affecting status.</p>
+                </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="glass-card p-4 h-100">
+                    <div class="text-info mb-3"><i class="fas fa-file-pdf fa-2x"></i></div>
+                    <h5 class="fw-bold text-white">PDF Audit Reports</h5>
+                    <p class="text-secondary small">Generate and download fully formatted assessment reports containing client details, evaluation results, and scoring impact metrics.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Interactive Tools (EMI & Comparison) -->
+<section class="py-5">
+    <div class="container">
+        <div class="row g-5">
+            <!-- EMI Calculator -->
+            <div class="col-md-6" data-aos="fade-right">
+                <div class="glass-card p-4">
+                    <h4 class="fw-bold text-white mb-3"><i class="fas fa-calculator text-primary me-2"></i>Loan EMI Calculator</h4>
+                    <p class="text-secondary small mb-4">Calculate monthly equated installments and interest details instantly.</p>
+                    
+                    <form id="emi-calculator-form">
+                        <div class="mb-3">
+                            <label class="form-label text-secondary small">Principal Loan Amount ($)</label>
+                            <input type="number" id="emi-principal" class="form-control bg-dark border-secondary text-white" value="100000" min="1000" required>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label text-secondary small">Interest Rate (% p.a.)</label>
+                                <input type="number" step="0.1" id="emi-rate" class="form-control bg-dark border-secondary text-white" value="9.5" min="1" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-secondary small">Term (Months)</label>
+                                <input type="number" id="emi-term" class="form-control bg-dark border-secondary text-white" value="240" min="6" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary-grad w-100">Calculate EMI</button>
+                    </form>
+                    
+                    <div id="emi-result-container" class="mt-4 d-none">
+                        <hr style="border-color: var(--border-color);">
+                        <div class="row text-center mt-3">
+                            <div class="col-4">
+                                <span class="text-secondary small d-block mb-1">Monthly EMI</span>
+                                <h5 class="fw-bold text-primary m-0" id="emi-result-monthly">$0.00</h5>
+                            </div>
+                            <div class="col-4">
+                                <span class="text-secondary small d-block mb-1">Total Interest</span>
+                                <h5 class="fw-bold text-warning m-0" id="emi-result-interest">$0.00</h5>
+                            </div>
+                            <div class="col-4">
+                                <span class="text-secondary small d-block mb-1">Total Repay</span>
+                                <h5 class="fw-bold text-success m-0" id="emi-result-total">$0.00</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Loan Comparison -->
+            <div class="col-md-6" data-aos="fade-left">
+                <div class="glass-card p-4">
+                    <h4 class="fw-bold text-white mb-3"><i class="fas fa-scale-balanced text-primary me-2"></i>Loan Offers Comparison</h4>
+                    <p class="text-secondary small mb-4">Compare interest rate variations for the same principal amount and term.</p>
+                    
+                    <form id="loan-comparison-form">
+                        <div class="mb-3">
+                            <label class="form-label text-secondary small">Principal Loan Amount ($)</label>
+                            <input type="number" id="comp-principal" class="form-control bg-dark border-secondary text-white" value="100000" min="1000" required>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label text-secondary small">Term (Months)</label>
+                                <input type="number" id="comp-term" class="form-control bg-dark border-secondary text-white" value="240" min="6" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-secondary small">Compare Interest Rates (%)</label>
+                                <input type="text" id="comp-rates" class="form-control bg-dark border-secondary text-white" value="7.5, 9.0, 11.5" placeholder="e.g. 8.0, 9.5" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary-grad w-100">Compare Offers</button>
+                    </form>
+                    
+                    <div id="comp-result-container" class="mt-4 d-none">
+                        <hr style="border-color: var(--border-color);">
+                        <div class="table-responsive mt-3">
+                            <table class="table table-dark table-hover small text-center m-0">
+                                <thead>
+                                    <tr>
+                                        <th>Interest Rate</th>
+                                        <th>Monthly EMI</th>
+                                        <th>Total Interest</th>
+                                        <th>Total Repayment</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="comp-results-tbody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

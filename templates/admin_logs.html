@@ -1,0 +1,87 @@
+{% extends 'layout.html' %}
+
+{% block title %}System Audit Logs - Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Admin Navigation Sidebar -->
+        <div class="col-md-3 col-lg-2 sidebar d-none d-md-block py-4">
+            <ul class="nav nav-pills flex-column mb-auto">
+                <li class="nav-item">
+                    <a href="{{ url_for('routes.admin_dashboard') }}" class="nav-link text-white">
+                        <i class="fas fa-chart-line me-2"></i> Admin Stats
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('routes.admin_users') }}" class="nav-link text-white">
+                        <i class="fas fa-users-cog me-2"></i> User Manager
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('routes.admin_predictions') }}" class="nav-link text-white">
+                        <i class="fas fa-database me-2"></i> Predictions DB
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('routes.admin_logs') }}" class="nav-link active">
+                        <i class="fas fa-fingerprint me-2"></i> Audit Logs
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Main Panel -->
+        <div class="col-md-9 col-lg-10 py-4 px-md-4">
+            <div class="mb-4" data-aos="fade-down">
+                <h2 class="fw-bold text-white">System Security & Activity Logs</h2>
+                <p class="text-secondary small">Comprehensive audit trails of system activities</p>
+            </div>
+
+            <!-- Logs Table -->
+            <div class="glass-card p-4" data-aos="fade-up">
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover align-middle small m-0" style="word-break: break-all;">
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Actor Account</th>
+                                <th>Action Performed</th>
+                                <th>IP Address</th>
+                                <th>User Agent (Browser)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for log in logs %}
+                                <tr>
+                                    <td style="min-width: 140px;">{{ log.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                                    <td>
+                                        {% if log.admin_id %}
+                                            <span class="badge bg-danger">ADMIN (ID: {{ log.admin_id }})</span>
+                                        {% elif log.user_id: %}
+                                            {% if log.user %}
+                                                <span class="badge bg-primary">{{ log.user.username }}</span>
+                                            {% else: %}
+                                                <span class="badge bg-secondary">Deleted User</span>
+                                            {% endif %}
+                                        {% else: %}
+                                            <span class="badge bg-secondary">ANONYMOUS</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ log.action }}</td>
+                                    <td><code>{{ log.ip_address or 'N/A' }}</code></td>
+                                    <td class="text-secondary" style="max-width: 250px;">{{ log.user_agent or 'N/A' }}</td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-center py-4 text-secondary">No system activity logs found.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

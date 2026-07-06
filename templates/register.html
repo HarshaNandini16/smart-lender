@@ -1,0 +1,51 @@
+{% extends 'layout.html' %}
+
+{% block title %}Sign Up - Smart Lender{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+        <div class="glass-card p-5 border-0 shadow-lg" style="max-width: 500px; width: 100%;" data-aos="zoom-in">
+            <div class="text-center mb-4">
+                <i class="fas fa-landmark fa-3x text-gradient mb-3"></i>
+                <h3 class="fw-bold text-white">Create Account</h3>
+                <p class="text-secondary small">Register to evaluate client applications with predictive AI</p>
+            </div>
+            
+            <form action="{{ url_for('routes.register') }}" method="POST">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label text-secondary small">Username</label>
+                        <input type="text" name="username" class="form-control bg-dark border-secondary text-white" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label text-secondary small">Full Name</label>
+                        <input type="text" name="full_name" class="form-control bg-dark border-secondary text-white" required>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label text-secondary small">Email Address</label>
+                    <input type="email" name="email" class="form-control bg-dark border-secondary text-white" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label text-secondary small">Phone Number</label>
+                    <input type="tel" name="phone" class="form-control bg-dark border-secondary text-white" placeholder="+1 (555) 000-0000" required>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="form-label text-secondary small">Password</label>
+                    <input type="password" name="password" class="form-control bg-dark border-secondary text-white" minlength="6" placeholder="At least 6 characters" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary-grad w-100 py-2.5 rounded-pill mb-3">Create Account</button>
+            </form>
+            
+            <div class="text-center">
+                <span class="text-secondary small">Already have an account? <a href="{{ url_for('routes.login') }}" class="text-primary text-decoration-none fw-bold">Sign In</a></span>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

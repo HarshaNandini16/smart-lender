@@ -1,0 +1,95 @@
+{% extends 'layout.html' %}
+
+{% block title %}Settings - Smart Lender{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar Navigation -->
+        <div class="col-md-3 col-lg-2 sidebar d-none d-md-block py-4">
+            <ul class="nav nav-pills flex-column mb-auto">
+                <li class="nav-item">
+                    <a href="{{ url_for('routes.dashboard') }}" class="nav-link text-white">
+                        <i class="fas fa-columns me-2"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('routes.predict') }}" class="nav-link text-white">
+                        <i class="fas fa-file-invoice-dollar me-2"></i> Predict Loan
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('routes.history') }}" class="nav-link text-white">
+                        <i class="fas fa-history me-2"></i> History Logs
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('routes.profile') }}" class="nav-link text-white">
+                        <i class="fas fa-user-circle me-2"></i> My Profile
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('routes.settings') }}" class="nav-link active">
+                        <i class="fas fa-cog me-2"></i> Settings
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Main Panel -->
+        <div class="col-md-9 col-lg-10 py-4 px-md-4">
+            <div class="mb-4" data-aos="fade-down">
+                <h2 class="fw-bold text-white">Settings</h2>
+                <p class="text-secondary small">Manage security settings and theme preferences</p>
+            </div>
+
+            <!-- Settings cards -->
+            <div class="row g-4" data-aos="fade-up">
+                <!-- Change password -->
+                <div class="col-md-7">
+                    <div class="glass-card p-4">
+                        <h5 class="fw-bold text-white mb-4"><i class="fas fa-key me-2 text-primary"></i>Security: Change Password</h5>
+                        
+                        <form action="{{ url_for('routes.settings') }}" method="POST">
+                            <input type="hidden" name="action" value="change_password">
+                            
+                            <div class="mb-3">
+                                <label class="form-label text-secondary small">Current Password</label>
+                                <input type="password" name="old_password" class="form-control bg-dark border-secondary text-white" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label text-secondary small">New Password (Min 6 characters)</label>
+                                <input type="password" name="new_password" class="form-control bg-dark border-secondary text-white" minlength="6" required>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary-grad px-4 rounded-pill mt-3">Update Password</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Theme / Preferences -->
+                <div class="col-md-5">
+                    <div class="glass-card p-4 h-100">
+                        <h5 class="fw-bold text-white mb-4"><i class="fas fa-sliders me-2 text-primary"></i>Preferences</h5>
+                        
+                        <div class="mb-4">
+                            <span class="text-secondary small d-block mb-2">Display Mode</span>
+                            <p class="small text-secondary">You can switch between light mode and dark mode. Choice will persist in your local storage.</p>
+                            <!-- Use click target of theme switcher -->
+                            <button onclick="document.getElementById('theme-switcher').click();" class="btn btn-outline-light rounded-pill btn-sm px-3"><i class="fas fa-palette me-1"></i>Switch Theme</button>
+                        </div>
+                        
+                        <hr style="border-color: var(--border-color);">
+                        
+                        <div>
+                            <span class="text-secondary small d-block mb-2">Audits & logs</span>
+                            <p class="small text-secondary">All account logins, profile updates, and evaluation submissions write entries in system logs.</p>
+                            <a href="{{ url_for('routes.history') }}" class="btn btn-outline-info rounded-pill btn-sm px-3"><i class="fas fa-receipt me-1"></i>View Logs</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'layout.html' %}
+
+{% block title %}Our Services - Smart Lender{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container" data-aos="fade-up">
+        <div class="text-center mb-5">
+            <h1 class="display-5 fw-bold text-white mb-2">Our <span class="text-gradient">Core Services</span></h1>
+            <p class="text-secondary lead">Discover the features provided by the Smart Lender underwriting framework.</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="glass-card p-4 text-center">
+                    <div class="text-primary mb-3"><i class="fas fa-robot fa-3x"></i></div>
+                    <h4 class="fw-bold text-white mb-2">Automated Underwriting</h4>
+                    <p class="text-secondary small">Submit loan application parameters and receive an instantaneous eligibility decision with confidence scoring and probability metrics.</p>
+                </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="glass-card p-4 text-center">
+                    <div class="text-success mb-3"><i class="fas fa-chart-line fa-3x"></i></div>
+                    <h4 class="fw-bold text-white mb-2">Analytics Dashboard</h4>
+                    <p class="text-secondary small">Audit decision metrics, analyze historical application counts, and track approval vs rejection rates with dynamic graphical layouts.</p>
+                </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="glass-card p-4 text-center">
+                    <div class="text-info mb-3"><i class="fas fa-lock fa-3x"></i></div>
+                    <h4 class="fw-bold text-white mb-2">Developer REST API</h4>
+                    <p class="text-secondary small">Integrate the loan scoring engine into standard bank systems using our secure REST API endpoints protected with JWT authorization.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

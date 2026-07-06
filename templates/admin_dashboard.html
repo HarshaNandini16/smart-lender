@@ -1,0 +1,176 @@
+{% extends 'layout.html' %}
+
+{% block title %}Admin Dashboard - Smart Lender{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Admin Navigation Sidebar -->
+        <div class="col-md-3 col-lg-2 sidebar d-none d-md-block py-4">
+            <ul class="nav nav-pills flex-column mb-auto">
+                <li class="nav-item">
+                    <a href="{{ url_for('routes.admin_dashboard') }}" class="nav-link active">
+                        <i class="fas fa-chart-line me-2"></i> Admin Stats
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('routes.admin_users') }}" class="nav-link text-white">
+                        <i class="fas fa-users-cog me-2"></i> User Manager
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('routes.admin_predictions') }}" class="nav-link text-white">
+                        <i class="fas fa-database me-2"></i> Predictions DB
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('routes.admin_logs') }}" class="nav-link text-white">
+                        <i class="fas fa-fingerprint me-2"></i> Audit Logs
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Main Panel -->
+        <div class="col-md-9 col-lg-10 py-4 px-md-4">
+            <div class="d-flex justify-content-between align-items-center mb-4" data-aos="fade-down">
+                <div>
+                    <h2 class="fw-bold text-white m-0">Admin Command Center</h2>
+                    <p class="text-secondary small m-0">System metrics, model training accuracy, and audit log tracking</p>
+                </div>
+                <a href="{{ url_for('routes.admin_export_csv') }}" class="btn btn-primary-grad rounded-pill"><i class="fas fa-file-csv me-2"></i>Export Predictions CSV</a>
+            </div>
+
+            <!-- Stats grid -->
+            <div class="row g-3 mb-4" data-aos="fade-up">
+                <div class="col-md-4">
+                    <div class="glass-card p-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="text-secondary small d-block mb-1">Total Users Registered</span>
+                                <h3 class="fw-bold text-white m-0">{{ total_users }}</h3>
+                            </div>
+                            <div class="bg-primary bg-opacity-15 p-3 rounded-3 text-primary">
+                                <i class="fas fa-users fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="glass-card p-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="text-secondary small d-block mb-1">Total AI Predictions</span>
+                                <h3 class="fw-bold text-white m-0">{{ total_predictions }}</h3>
+                            </div>
+                            <div class="bg-info bg-opacity-15 p-3 rounded-3 text-info">
+                                <i class="fas fa-brain fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="glass-card p-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="text-secondary small d-block mb-1">Eligibility Clearance Share</span>
+                                <h3 class="fw-bold text-success m-0">
+                                    {% if total_predictions > 0 %}
+                                        {{ ((eligible_count / total_predictions) * 100)|round(1) }}%
+                                    {% else %}
+                                        0.0%
+                                    {% endif %}
+                                </h3>
+                            </div>
+                            <div class="bg-success bg-opacity-15 p-3 rounded-3 text-success">
+                                <i class="fas fa-chart-pie fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Visual Charts -->
+            <div class="row g-4 mb-4" data-aos="fade-up">
+                <div class="col-md-5">
+                    <div class="glass-card p-4 h-100">
+                        <h5 class="fw-bold text-white mb-4">Eligible Share Distribution</h5>
+                        <div style="position: relative; height: 260px;">
+                            {% if total_predictions > 0 %}
+                                <canvas id="adminPredictionsDistribution" data-eligible="{{ eligible_count }}" data-total="{{ total_predictions }}"></canvas>
+                            {% else %}
+                                <div class="h-100 d-flex flex-column align-items-center justify-content-center text-secondary">
+                                    <i class="fas fa-circle-notch fa-spin fa-2x mb-2"></i>
+                                    <span class="small">Awaiting application records...</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-7">
+                    <div class="glass-card p-4 h-100">
+                        <h5 class="fw-bold text-white mb-4">ML Model CV Accuracies (%)</h5>
+                        <div style="position: relative; height: 260px;">
+                            {% if comparison_data %}
+                                <canvas id="modelAccuracyChart" data-comparison='{{ comparison_data|tojson }}'></canvas>
+                            {% else %}
+                                <div class="h-100 d-flex flex-column align-items-center justify-content-center text-secondary">
+                                    <i class="fas fa-exclamation-triangle fa-2x mb-2 text-warning"></i>
+                                    <span class="small text-center">ML comparison logs unavailable.<br>Run train_model.py to generate models.</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System audits timeline -->
+            <div class="glass-card p-4" data-aos="fade-up">
+                <h5 class="fw-bold text-white mb-3">Audit logs timeline</h5>
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover align-middle small m-0">
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Actor ID</th>
+                                <th>Action Details</th>
+                                <th>IP Address</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for log in logs %}
+                                <tr>
+                                    <td>{{ log.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                                    <td>
+                                        {% if log.admin_id %}
+                                            <span class="badge bg-danger">ADMIN #{{ log.admin_id }}</span>
+                                        {% elif log.user_id: %}
+                                            <span class="badge bg-primary">USER #{{ log.user_id }}</span>
+                                        {% else: %}
+                                            <span class="badge bg-secondary">ANONYMOUS</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ log.action }}</td>
+                                    <td><code>{{ log.ip_address or 'N/A' }}</code></td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="4" class="text-center py-3 text-secondary small">No audit logs logged in database.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Custom charts initializer -->
+<script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+{% endblock %}

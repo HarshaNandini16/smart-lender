@@ -1,0 +1,155 @@
+{% extends 'layout.html' %}
+
+{% block title %}Evaluate Loan Eligibility - Smart Lender{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar Navigation -->
+        <div class="col-md-3 col-lg-2 sidebar d-none d-md-block py-4">
+            <ul class="nav nav-pills flex-column mb-auto">
+                <li class="nav-item">
+                    <a href="{{ url_for('routes.dashboard') }}" class="nav-link text-white">
+                        <i class="fas fa-columns me-2"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('routes.predict') }}" class="nav-link active">
+                        <i class="fas fa-file-invoice-dollar me-2"></i> Predict Loan
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('routes.history') }}" class="nav-link text-white">
+                        <i class="fas fa-history me-2"></i> History Logs
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('routes.profile') }}" class="nav-link text-white">
+                        <i class="fas fa-user-circle me-2"></i> My Profile
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('routes.settings') }}" class="nav-link text-white">
+                        <i class="fas fa-cog me-2"></i> Settings
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Main Panel -->
+        <div class="col-md-9 col-lg-10 py-4 px-md-4">
+            <div class="mb-4" data-aos="fade-down">
+                <h2 class="fw-bold text-white">Loan Eligibility Predictor</h2>
+                <p class="text-secondary small">Submit application details to evaluate eligibility using the trained ML model.</p>
+            </div>
+
+            <!-- Predict Form -->
+            <div class="glass-card p-5 border-0 shadow-lg mb-5" data-aos="fade-up" style="max-width: 800px;">
+                <form id="loan-predict-form" action="{{ url_for('routes.predict') }}" method="POST">
+                    
+                    <h5 class="text-gradient fw-bold mb-4"><i class="fas fa-user me-2"></i>1. Personal Profile & Demographics</h5>
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-secondary small">Gender</label>
+                            <select name="Gender" class="form-select bg-dark border-secondary text-white" required>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-secondary small">Marital Status</label>
+                            <select name="Married" class="form-select bg-dark border-secondary text-white" required>
+                                <option value="Yes">Married</option>
+                                <option value="No">Single / Unmarried</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-secondary small">Dependents Count</label>
+                            <select name="Dependents" class="form-select bg-dark border-secondary text-white" required>
+                                <option value="0">0 Dependents</option>
+                                <option value="1">1 Dependent</option>
+                                <option value="2">2 Dependents</option>
+                                <option value="3+">3 or more Dependents</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-secondary small">Education Level</label>
+                            <select name="Education" class="form-select bg-dark border-secondary text-white" required>
+                                <option value="Graduate">Graduate</option>
+                                <option value="Not Graduate">Not Graduate</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <h5 class="text-gradient fw-bold mb-4 mt-5"><i class="fas fa-coins me-2"></i>2. Financial Profile & Loan Requested</h5>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-secondary small">Self Employed?</label>
+                            <select name="Self_Employed" class="form-select bg-dark border-secondary text-white" required>
+                                <option value="No">No (Salaried / Other)</option>
+                                <option value="Yes">Yes (Self-Employed)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-secondary small">Credit History Record</label>
+                            <select name="Credit_History" class="form-select bg-dark border-secondary text-white" required>
+                                <option value="1.0">Satisfactory (No Defaults / Active Account)</option>
+                                <option value="0.0">Unsatisfactory (Previous Defaults / Inactive)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-secondary small">Applicant Monthly Income ($)</label>
+                            <input type="number" name="ApplicantIncome" class="form-control bg-dark border-secondary text-white" placeholder="e.g. 5000" min="500" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-secondary small">Co-applicant Monthly Income ($)</label>
+                            <input type="number" name="CoapplicantIncome" class="form-control bg-dark border-secondary text-white" placeholder="Enter 0 if none" min="0" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-secondary small">Requested Loan Amount ($ Thousands)</label>
+                            <input type="number" name="LoanAmount" class="form-control bg-dark border-secondary text-white" placeholder="e.g. 150 (for $150,000)" min="5" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-secondary small">Loan Term Length (Months)</label>
+                            <select name="Loan_Amount_Term" class="form-select bg-dark border-secondary text-white" required>
+                                <option value="360">360 Months (30 Years)</option>
+                                <option value="240">240 Months (20 Years)</option>
+                                <option value="180">180 Months (15 Years)</option>
+                                <option value="120">120 Months (10 Years)</option>
+                                <option value="84">84 Months (7 Years)</option>
+                                <option value="60">60 Months (5 Years)</option>
+                                <option value="36">36 Months (3 Years)</option>
+                                <option value="12">12 Months (1 Year)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label text-secondary small">Property Location Area</label>
+                        <select name="Property_Area" class="form-select bg-dark border-secondary text-white" required>
+                            <option value="Urban">Urban Area</option>
+                            <option value="Semiurban">Semiurban Area</option>
+                            <option value="Rural">Rural Area</option>
+                        </select>
+                    </div>
+
+                    <div class="d-flex gap-3 mt-5">
+                        <button type="submit" class="btn btn-primary-grad px-5"><i class="fas fa-wand-magic-sparkles me-2"></i>Evaluate Eligibility</button>
+                        <button type="reset" class="btn btn-outline-light rounded-pill px-4">Reset Fields</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

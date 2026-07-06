@@ -1,0 +1,17 @@
+{% extends 'layout.html' %}
+
+{% block title %}Internal Server Error (500) - Smart Lender{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container d-flex justify-content-center align-items-center" style="min-height: 70vh;">
+        <div class="glass-card p-5 border-0 shadow-lg text-center" style="max-width: 500px; width: 100%; border-top: 3px solid var(--accent-rose) !important;" data-aos="zoom-in">
+            <i class="fas fa-triangle-exclamation fa-5x text-danger mb-4 animate-pulse"></i>
+            <h1 class="display-4 fw-bold text-white mb-3">500</h1>
+            <h4 class="fw-bold text-white mb-3">Server Error</h4>
+            <p class="text-secondary small mb-4">An unexpected error occurred on our server while processing this page. Please try again later or contact our technical support.</p>
+            <a href="{{ url_for('routes.index') }}" class="btn btn-outline-light px-4 rounded-pill"><i class="fas fa-home me-2"></i>Return Home</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

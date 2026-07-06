@@ -1,0 +1,112 @@
+[
+    {
+        "Model":"Logistic Regression",
+        "Accuracy":0.975,
+        "Precision":0.9695121951,
+        "Recall":1.0,
+        "F1-Score":0.9845201238,
+        "ROC-AUC":0.9377205093,
+        "CV Accuracy":0.97875,
+        "Training Time (s)":0.0141925812,
+        "Prediction Time (s)":0.0017852783
+    },
+    {
+        "Model":"Decision Tree",
+        "Accuracy":0.955,
+        "Precision":0.96875,
+        "Recall":0.9748427673,
+        "F1-Score":0.9717868339,
+        "ROC-AUC":0.9382574014,
+        "CV Accuracy":0.96875,
+        "Training Time (s)":0.0036096573,
+        "Prediction Time (s)":0.0009391308
+    },
+    {
+        "Model":"Random Forest",
+        "Accuracy":0.975,
+        "Precision":0.9695121951,
+        "Recall":1.0,
+        "F1-Score":0.9845201238,
+        "ROC-AUC":0.9466175794,
+        "CV Accuracy":0.97875,
+        "Training Time (s)":0.1955344677,
+        "Prediction Time (s)":0.012336731
+    },
+    {
+        "Model":"KNN",
+        "Accuracy":0.925,
+        "Precision":0.9186046512,
+        "Recall":0.9937106918,
+        "F1-Score":0.9546827795,
+        "ROC-AUC":0.9173186071,
+        "CV Accuracy":0.905,
+        "Training Time (s)":0.0037434101,
+        "Prediction Time (s)":0.0062212944
+    },
+    {
+        "Model":"Naive Bayes",
+        "Accuracy":0.975,
+        "Precision":0.9695121951,
+        "Recall":1.0,
+        "F1-Score":0.9845201238,
+        "ROC-AUC":0.929590428,
+        "CV Accuracy":0.97875,
+        "Training Time (s)":0.0019392967,
+        "Prediction Time (s)":0.0015451908
+    },
+    {
+        "Model":"SVM",
+        "Accuracy":0.97,
+        "Precision":0.9693251534,
+        "Recall":0.9937106918,
+        "F1-Score":0.9813664596,
+        "ROC-AUC":0.9460039883,
+        "CV Accuracy":0.975,
+        "Training Time (s)":0.1019487381,
+        "Prediction Time (s)":0.0075724125
+    },
+    {
+        "Model":"Gradient Boosting",
+        "Accuracy":0.975,
+        "Precision":0.9695121951,
+        "Recall":1.0,
+        "F1-Score":0.9845201238,
+        "ROC-AUC":0.9386408958,
+        "CV Accuracy":0.9775,
+        "Training Time (s)":0.1742055416,
+        "Prediction Time (s)":0.0024175644
+    },
+    {
+        "Model":"AdaBoost",
+        "Accuracy":0.975,
+        "Precision":0.9695121951,
+        "Recall":1.0,
+        "F1-Score":0.9845201238,
+        "ROC-AUC":0.9330418776,
+        "CV Accuracy":0.975,
+        "Training Time (s)":0.2132956982,
+        "Prediction Time (s)":0.0155775547
+    },
+    {
+        "Model":"Extra Trees",
+        "Accuracy":0.975,
+        "Precision":0.9695121951,
+        "Recall":1.0,
+        "F1-Score":0.9845201238,
+        "ROC-AUC":0.9475379659,
+        "CV Accuracy":0.97875,
+        "Training Time (s)":0.1473703384,
+        "Prediction Time (s)":0.0138273239
+    },
+    {
+        "Model":"XGBoost",
+        "Accuracy":0.975,
+        "Precision":0.9695121951,
+        "Recall":1.0,
+        "F1-Score":0.9845201238,
+        "ROC-AUC":0.9265991717,
+        "CV Accuracy":0.97375,
+        "Training Time (s)":0.0937538147,
+        "Prediction Time (s)":0.0062320232
+    }
+]

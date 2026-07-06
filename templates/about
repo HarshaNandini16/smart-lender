@@ -1,0 +1,33 @@
+{% extends 'layout.html' %}
+
+{% block title %}About Us - Smart Lender{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container" data-aos="fade-up">
+        <div class="text-center mb-5">
+            <h1 class="display-5 fw-bold text-white mb-2">About <span class="text-gradient">Smart Lender</span></h1>
+            <p class="text-secondary lead">Automating risk scoring through Explainable Artificial Intelligence.</p>
+        </div>
+        
+        <div class="row align-items-center mb-5 g-5">
+            <div class="col-md-6" data-aos="fade-right">
+                <h3 class="fw-bold text-white mb-3">Our Mission</h3>
+                <p class="text-secondary">Smart Lender is designed to transform the manual loan underwriting processes used by modern retail banking institutions. By evaluating loan applications using machine learning algorithms trained on historical data, we provide instant eligibility assessments.</p>
+                <p class="text-secondary">Crucially, we do not believe in black-box AI. Every recommendation is accompanied by structured feature contribution scoring, enabling lenders to explain recommendations to applicants, ensuring fairness, transparency, and compliance.</p>
+            </div>
+            <div class="col-md-6" data-aos="fade-left">
+                <div class="glass-card p-4">
+                    <h5 class="fw-bold text-white mb-3"><i class="fas fa-microchip text-primary me-2"></i>Under the Hood</h5>
+                    <ul class="list-unstyled small text-secondary">
+                        <li class="mb-2"><i class="fas fa-circle-check text-success me-2"></i> <b>10 ML Classifiers Compared:</b> Logistic Regression, Random Forest, SVM, KNN, XGBoost, and more.</li>
+                        <li class="mb-2"><i class="fas fa-circle-check text-success me-2"></i> <b>Advanced Preprocessing:</b> Robust cleaning, standard scaling, and categorical label mapping.</li>
+                        <li class="mb-2"><i class="fas fa-circle-check text-success me-2"></i> <b>Local Contributions Explainer:</b> Weights assigned to each user parameter to explain eligibility status.</li>
+                        <li class="mb-2"><i class="fas fa-circle-check text-success me-2"></i> <b>Secure REST API:</b> REST services secured using standard JWT tokens and rate-limiting.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
